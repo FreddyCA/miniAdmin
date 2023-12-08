@@ -1,4 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import PropTypes from "prop-types";
+
 // importando las referencias
 import { auth, firestoreDB, storage } from "./firebase";
 
@@ -8,7 +10,6 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
-  updateProfile,
 } from "firebase/auth";
 
 // importando para firestore
@@ -169,3 +170,7 @@ export function AuthUserProvider({ children }) {
 }
 
 export const useAuth = () => useContext(AuthUserContext);
+
+AuthUserProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};

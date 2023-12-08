@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../firebase/auth";
 import { useEffect, useState } from "react";
 
@@ -16,10 +16,14 @@ const UserProfile = ({ data }) => {
     minute: "2-digit",
   });
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     // Verificar y establecer el estado del usuario
     if (data.rol === "userNew") {
       setUserStatus("En verificación");
+    } else if (data.rol === "habilitado") {
+      setUserStatus("Usuario Verificado");
     }
 
     // Verificar y establecer el formato del archivo
@@ -38,46 +42,59 @@ const UserProfile = ({ data }) => {
     logout();
   };
 
+  const handleCourse = () => {
+    navigate("/coursePanel", { state: { courseId: data.idCurso } });
+  };
+
   return (
     // renderizar un bosquejo
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      <div style={{ display: "flex", gap: "2rem" }}>
+        <Link
+          to={"/"}
+          style={{
+            backgroundColor: "skyblue",
+            padding: "1rem",
+            textDecoration: "none",
+            width: "min-content",
+          }}
+        >
+          <div>Inicio</div>
+        </Link>
+
+        <div
+          style={{
+            backgroundColor: "rosybrown",
+            padding: "1rem",
+            textDecoration: "none",
+            width: "min-content",
+            whiteSpace: "nowrap",
+            cursor: "pointer",
+          }}
+          onClick={handleLogout}
+        >
+          Cerrar sesión
+        </div>
+      </div>
       <h1>Bienvenido: {data.name}</h1>
       <span>Curso: {data.curso}</span>
+
+      {data.rol === "habilitado" && <div onClick={handleCourse}>Ver curso</div>}
+
       <span>Estado de Inscripción: {userStatus}</span>
       <span>Fecha de Inscripcion: {dateFormat}</span>
       {formateFile ? (
-        <img src={data.comprobante} alt="imagen de recibo" style={{maxWidth: "100px"}}/>
+        <img
+          src={data.comprobante}
+          alt="imagen de recibo"
+          style={{ maxWidth: "100px" }}
+        />
       ) : (
         <a href={data.comprobante} target="_blank" rel="noreferrer">
           Click para ver el PDF
         </a>
       )}
-
-      <Link
-        to={"/"}
-        style={{
-          backgroundColor: "skyblue",
-          padding: "1rem",
-          textDecoration: "none",
-          width: "min-content",
-        }}
-      >
-        <div>Inicio</div>
-      </Link>
-
-      <div
-        style={{
-          backgroundColor: "rosybrown",
-          padding: "1rem",
-          textDecoration: "none",
-          width: "min-content",
-          whiteSpace: "nowrap",
-          cursor: "pointer",
-        }}
-        onClick={handleLogout}
-      >
-        Cerrar sesión
-      </div>
+      {data.rol === "userNew" && <p>NO TIENE ACCESO AL CURSO</p>}
     </div>
   );
 };

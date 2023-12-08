@@ -6,6 +6,7 @@ import { Route, Routes } from "react-router-dom";
 import { AuthUserProvider } from "./firebase/auth";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ProtectedRouteLogin from "./components/ProtectedRouteLogin";
+import CoursePanel from "./pages/CoursePanel";
 
 const App = () => {
   return (
@@ -30,6 +31,11 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          <Route path="/coursePanel" element={
+            <ProtectedRoute>
+              <CoursePanel />
+            </ProtectedRoute>
+          }/>
         </Routes>
       </AuthUserProvider>
     </>
