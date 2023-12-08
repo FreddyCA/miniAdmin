@@ -12,11 +12,11 @@ const ProtectedRoute = ({ children }) => {
           justifyContent: "center",
         }}
       >
-        <h1>Cargando</h1>
+        <h1>Cargando el panel de Usuario</h1>
       </div>
     );
 
-    if (!authUser) return <Navigate to={"/login"}/>
+  if (!authUser) return <Navigate to={"/login"} />;
 
   return <>{children}</>;
 };

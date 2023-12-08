@@ -5,9 +5,7 @@ import { useAuth } from "../firebase/auth";
 const Home = () => {
   // trayendo el register:
   const { authUser, isLoading } = useAuth();
-  console.log(authUser);
-  console.log(isLoading);
-  
+  // console.log(useAuth());
   return (
     <div
       style={{
@@ -19,7 +17,7 @@ const Home = () => {
       }}
     >
       <h1>Home</h1>
-      {(isLoading === false && authUser) && <h2>{authUser.email}</h2>}
+      {isLoading === false && authUser && <h2>{authUser.email}</h2>}
       <div style={{ display: "flex", gap: "2rem" }}>
         <Link to={"/register"} style={{ textDecoration: "none" }}>
           <div

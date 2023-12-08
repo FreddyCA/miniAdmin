@@ -2,24 +2,41 @@ import { useState } from "react";
 
 import { useAuth } from "../firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { serverTimestamp } from "firebase/firestore";
 
 const Register = () => {
+  // para redirigir
+  const navigate = useNavigate();
+
   const [data, setData] = useState({
     name: "",
     email: "",
     password: "",
-    rol: "activation",
+    curso: "Primer Curso De Desarrollo",
+    idCurso: "primerCursoDev",
+    rol: "userNew",
     date: new Date().toString(),
+    dateDB: serverTimestamp(),
   });
+
+  // estado para el file
+  const [file, setFile] = useState(null);
 
   const [messageAlert, setMessageAlert] = useState(false);
 
   // trayendo el register:
   const { register, authUser, isLoading } = useAuth();
 
-  // para redirigir
-  const navigate = useNavigate();
+  // traer el errorCode para manejo de errores, ademas de usar useefect
 
+  // manejo del file
+  const handleFileChange = (e) => {
+    const fileSelected = e.target.files[0];
+    // const fileSelected = e.target.value;
+    setFile(fileSelected);
+  };
+
+  // manejo de inputs
   const handleChange = ({ target: { name, value } }) => {
     setData({ ...data, [name]: value });
   };
@@ -27,7 +44,18 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await register(data.email, data.password);
+      // llega el url a registrar:
+      await register(
+        data.name,
+        data.email,
+        data.password,
+        data.curso,
+        data.idCurso,
+        data.rol,
+        data.date,
+        data.dateDB,
+        file
+      );
       console.log(authUser);
       console.log(isLoading);
       setMessageAlert(true);
@@ -41,7 +69,6 @@ const Register = () => {
       // manejo de erroes pueden ser varios if con condicion el codigo de mesnake
       console.log("Error en el formulario de registro", error.message);
     }
-    console.log(data);
     // console.log(authUser);
     console.log(isLoading);
   };
@@ -92,6 +119,12 @@ const Register = () => {
           value={data.password}
           placeholder="Escribe tu constraseña"
           onChange={handleChange}
+        ></input>
+
+        <input
+          type="file"
+          accept=".jpg, .jpeg, .png, .pdf"
+          onChange={handleFileChange}
         ></input>
 
         <button type="submit">Registrar</button>
